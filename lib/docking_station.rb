@@ -1,4 +1,6 @@
 
+
+
 class DockingStation
   attr_accessor :capacity
 
@@ -14,9 +16,16 @@ class DockingStation
     @bikes << bike
   end
 
-  def release_bike(bike)
+
+  def release_bike
     fail 'No bikes available' if empty?
-    chosen = @bikes.select{|b| b[:broken] == false}.pop
+    chosen = @bikes.each do |b|
+      unless b.broken?
+        @bikes.pop
+      else
+      fail 'No bikes available'
+      end
+    end
     @bikes.delete(chosen)
     chosen
   end

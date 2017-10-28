@@ -1,42 +1,46 @@
 require 'docking_station'
- # require 'bike'
+
 describe DockingStation do
 
     class BikeDouble
-      def working?
+
+      def broken?
         true
+      end
+
+      def report_broken
       end
     end
 
+bike = BikeDouble.new
+
   describe 'initialization' do
-    subject {DockingStation.new}
-    let(:bikes) { BikeDouble.new }
+    subject { DockingStation.new }
     it 'sets default capacities' do
       described_class::DEFAULT_CAPACITY.times do
-        subject.dock(bikes)
+        subject.dock(bike)
       end
-      expect { subject.dock(bikes) }.to raise_error 'Docking station is full'
+      expect { subject.dock(bike) }.to raise_error 'Docking station is full'
     end
   end
 
   it { is_expected.to respond_to :release_bike }
 
     it 'releases working bikes' do
-      subject.dock BikeDouble.new
-      bike = subject.release_bike
-      expect(bike).to be_working
+      bike (broken?: false)
+      subject.dock(bike)
+      expect(subject.release_bike).to be bike
     end
 
     it 'does not release broken bikes' do
-      bike = BikeDouble.new
-      bike.report_broken
+      allow(bike).to receive(:broken).and_return(true)
       subject.dock bike
       expect(subject.release_bike).to raise_error 'No bikes available'
     end
 
   it { is_expected.to respond_to(:dock).with(1).argument }
 
-    describe '#release_bike' do
+    describe ' #release_bike' do
       it 'raises an error when there are no bikes available' do
         expect { subject.release_bike }.to raise_error 'No bikes available'
       end
@@ -44,12 +48,9 @@ describe DockingStation do
 
   describe 'dock' do
     it 'raises error when full' do
-      subject.DEFAULT_CAPACITY.times { subject.dock(BikeDouble.new) }
-      expect{ subject.dock(BikeDouble.new) }.to raise_error 'Docking station is full'
+      subject.capacity.times { subject.dock(bike) }
+      expect{ subject.dock(bike) }.to raise_error 'Docking station is full'
     end
   end
 
-  #   it "user passing bike as broken" do
-  #     expect(subject).to respond_to(:dock).with(2).arguments
-  #   end
 end
