@@ -2,7 +2,7 @@ require 'docking_station'
 
 describe DockingStation do
 
-    class BikeDouble
+  class BikeDouble
 
       def broken?
         true
@@ -12,7 +12,7 @@ describe DockingStation do
       end
     end
 
-bike = BikeDouble.new
+  bike = BikeDouble.new
 
   describe 'initialization' do
     subject { DockingStation.new }

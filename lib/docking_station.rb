@@ -19,9 +19,9 @@ class DockingStation
 
   def release_bike
     fail 'No bikes available' if empty?
-    chosen = @bikes.each do |b|
+    @bikes.each do |b|
       unless b.broken?
-        @bikes.pop
+        chosen = @bikes.pop
       else
       fail 'No bikes available'
       end
