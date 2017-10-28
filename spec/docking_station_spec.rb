@@ -1,37 +1,55 @@
 require 'docking_station'
-require 'bike'
-
-class Bike
-  def working?
-    true
-  end
-end
-
+ # require 'bike'
 describe DockingStation do
 
-  describe '#release_bike' do
-    it 'raises an error when there are no bikes available' do
-      # we want to release the bike we docked
-      expect{subject.release_bike}.to raise_error 'No bikes available'
+    class BikeDouble
+      def working?
+        true
+      end
     end
 
-    it 'only returns non-broken bikes' do
-      subject.dock(Bike.new)
-      subject.dock(Bike.new, true)
-      expect(subject.release_bike).to include(:broken => false)
+  describe 'initialization' do
+    subject {DockingStation.new}
+    let(:bikes) { BikeDouble.new }
+    it 'sets default capacities' do
+      described_class::DEFAULT_CAPACITY.times do
+        subject.dock(bikes)
+      end
+      expect { subject.dock(bikes) }.to raise_error 'Docking station is full'
     end
   end
 
-  describe "#dock(bike)" do
-    it "raises error when the station can no accept bikes" do
+  it { is_expected.to respond_to :release_bike }
 
-      expect{21.times {subject.dock(Bike.new)}}.to raise_error "The docking station is full"
+    it 'releases working bikes' do
+      subject.dock BikeDouble.new
+      bike = subject.release_bike
+      expect(bike).to be_working
     end
 
-    it "user passing bike as broken" do
-      expect(subject).to respond_to(:dock).with(2).arguments
+    it 'does not release broken bikes' do
+      bike = BikeDouble.new
+      bike.report_broken
+      subject.dock bike
+      expect(subject.release_bike).to raise_error 'No bikes available'
     end
 
+  it { is_expected.to respond_to(:dock).with(1).argument }
+
+    describe '#release_bike' do
+      it 'raises an error when there are no bikes available' do
+        expect { subject.release_bike }.to raise_error 'No bikes available'
+      end
+    end
+
+  describe 'dock' do
+    it 'raises error when full' do
+      subject.DEFAULT_CAPACITY.times { subject.dock(BikeDouble.new) }
+      expect{ subject.dock(BikeDouble.new) }.to raise_error 'Docking station is full'
+    end
   end
 
+  #   it "user passing bike as broken" do
+  #     expect(subject).to respond_to(:dock).with(2).arguments
+  #   end
 end
