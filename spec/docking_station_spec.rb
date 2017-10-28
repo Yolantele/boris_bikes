@@ -1,4 +1,5 @@
 require 'docking_station'
+require 'support/shared_examples_for_bike_container'
 
 describe DockingStation do
 
@@ -52,5 +53,7 @@ describe DockingStation do
       expect{ subject.dock(bike) }.to raise_error 'Docking station is full'
     end
   end
+
+  it_behaves_like BikeContainer
 
 end
