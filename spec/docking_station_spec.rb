@@ -1,6 +1,12 @@
 require 'docking_station'
 require 'bike'
 
+class Bike
+  def working?
+    true
+  end
+end
+
 describe DockingStation do
 
   describe '#release_bike' do

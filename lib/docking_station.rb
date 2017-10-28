@@ -11,16 +11,14 @@ class DockingStation
 
   def release_bike
     fail 'No bikes available' if empty?
-    
-    chosen = @bikes.select{|x| x[:broken] == false}.pop
+    chosen = @bikes.select{|b| b[:broken] == false}.pop
     @bikes.delete(chosen)
     chosen
-
   end
 
   def dock(bike, broken=false)
     fail 'The docking station is full' if full?
-    @bikes << {bike: bike, broken: broken}
+    @bikes << {bikes: bike, broken: broken}
   end
 
   private
